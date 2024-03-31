@@ -1,0 +1,13 @@
+syntax="proto3";
+
+package mmoProto;
+
+option go_package = "/pb";
+
+enum ServerResponseTypeE {
+    CHARACTER_UPDATE_RESP = 0;
+}
+
+message ServerResponse {
+    ServerResponseTypeE type = 1;
+}
