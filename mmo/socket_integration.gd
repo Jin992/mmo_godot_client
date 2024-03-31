@@ -10,6 +10,10 @@ const TcpSocket = preload("res://mmo/net/tcp_socket.gd")
 
 var _socket = TcpSocket.new()
 var thread = Thread.new()
+var onDataHdl: Callable 
+
+func set_on_receive_hander(f: Callable):
+	onDataHdl = f
 
 func socket_connect() -> void:
 	_socket.connect("connected", _handle_client_connected)
@@ -23,7 +27,7 @@ func socket_connect() -> void:
 	
 func send(req: mmoProto.ServerRequest) -> void:
 	var packed_bytes: PackedByteArray = req.to_bytes()
-	print("Send size: ", packed_bytes.size())
+	#print("Send size: ", packed_bytes.size())
 	_socket.send(packed_bytes)
 
 func _connect_after_timeout(timeout: float) -> void:
@@ -42,9 +46,8 @@ func _handle_client_error() -> void:
 	_connect_after_timeout(RECONNECT_TIMEOUT)
 	
 func _handle_client_data(data: PackedByteArray) -> void:
-	print("Client data size: ", data.size())
-	#var message: PoolByteArray = [97, 99, 107] # Bytes for "ack" in ASCII
-	#_socket.send(data)
+	#print("Client data size: ", data.size())
+	onDataHdl.call(data)
 
 func _thread_func() -> void:
 	print("Starting socket poll thread")

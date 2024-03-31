@@ -10,4 +10,5 @@ enum ServerResponseTypeE {
 
 message ServerResponse {
     ServerResponseTypeE type = 1;
+    int32 seq_id = 2;
 }

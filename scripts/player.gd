@@ -1,6 +1,7 @@
 extends CharacterBody3D
 
 const mmoProto = preload("res://proto/serverRequest.gd")
+const ServerResponse = preload("res://proto/serverResponse.gd")
 var SocketIntegration = preload("res://mmo/socket_integration.gd").new()
 
 @onready var camera_mount = $camera_mount
@@ -18,8 +19,17 @@ const JUMP_VELOCITY = 4.5
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+func handle_server_response(data: PackedByteArray):
+	var resp = ServerResponse.ServerResponse.new()
+	var res_code = resp.from_bytes(data)
+	if res_code == ServerResponse.PB_ERR.NO_ERRORS:
+		print("Respons Type %s SeqId %d" % [resp.get_type(), resp.get_seq_id()])
+	else:
+		return
+
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	SocketIntegration.set_on_receive_hander(handle_server_response)
 	SocketIntegration.socket_connect()
 	
 func _input(event):

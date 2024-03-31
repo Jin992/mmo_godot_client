@@ -674,6 +674,11 @@ class ServerResponse:
 		service.field = __type
 		data[__type.tag] = service
 		
+		__seq_id = PBField.new("seq_id", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
+		service = PBServiceField.new()
+		service.field = __seq_id
+		data[__seq_id.tag] = service
+		
 	var data = {}
 	
 	var __type: PBField
@@ -684,6 +689,15 @@ class ServerResponse:
 		__type.value = DEFAULT_VALUES_3[PB_DATA_TYPE.ENUM]
 	func set_type(value) -> void:
 		__type.value = value
+	
+	var __seq_id: PBField
+	func get_seq_id() -> int:
+		return __seq_id.value
+	func clear_seq_id() -> void:
+		data[2].state = PB_SERVICE_STATE.UNFILLED
+		__seq_id.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
+	func set_seq_id(value : int) -> void:
+		__seq_id.value = value
 	
 	func _to_string() -> String:
 		return PBPacker.message_to_string(data)

@@ -49,23 +49,11 @@ func poll(delta: float) -> void:
 	if new_status != _status:
 		_status = new_status
 		_verify_event(_status)
-		#match new_status:
-			#_stream.STATUS_NONE:
-				#print("Disconnected from host.")
-				#emit_signal("disconnected")
-			#_stream.STATUS_CONNECTING:
-				#print("Connecting to host.")
-			#_stream.STATUS_CONNECTED:
-				#print("Connected to host.")
-				#emit_signal("connected")
-			#_stream.STATUS_ERROR:
-				#print("Error with socekt stream")
-				#emit_signal("error")
 	
 	if _status == _stream.STATUS_CONNECTED:
 		var available_bytes: int = _stream.get_available_bytes()
 		if available_bytes > 0:
-			print("Available bytes: ", available_bytes)
+			#print("Available bytes: ", available_bytes)
 			var data: Array = _stream.get_partial_data(available_bytes)
 			if data[0] != OK:
 				print("Error getting data from stream: ", data[0])
