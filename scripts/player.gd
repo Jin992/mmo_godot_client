@@ -1,7 +1,6 @@
 extends CharacterBody3D
 
-const mmoProto = preload("res://proto/serverRequest.gd")
-const ServerResponse = preload("res://proto/serverResponse.gd")
+const mmoProto = preload("res://proto/game_service.gd")
 var SocketIntegration = preload("res://mmo/socket_integration.gd").new()
 
 @onready var camera_mount = $camera_mount
@@ -20,9 +19,9 @@ const JUMP_VELOCITY = 4.5
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func handle_server_response(data: PackedByteArray):
-	var resp = ServerResponse.ServerResponse.new()
+	var resp = mmoProto.GameServiceMessage.new()
 	var res_code = resp.from_bytes(data)
-	if res_code == ServerResponse.PB_ERR.NO_ERRORS:
+	if res_code ==  mmoProto.PB_ERR.NO_ERRORS:
 		print("Respons Type %s SeqId %d" % [resp.get_type(), resp.get_seq_id()])
 	else:
 		return
@@ -66,8 +65,10 @@ func _physics_process(delta):
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
 	move_and_slide()
-	var request := mmoProto.ServerRequest.new()
-	request.set_type(mmoProto.ServerRequestTypeE.CHARACTER_UPDATE)
-	request.set_seq_id(seq_id)
+	var request := mmoProto.GameServiceMessage.new()
+	request.set_id(mmoProto.GameServiceMessageTypeE.CharactersUpdateReqE)
+	var update_req := request.new_characters_update_request()
+	var character := update_req.add_characters()
+	character.set_id("Main")
 	SocketIntegration.send(request)
 	seq_id += 1

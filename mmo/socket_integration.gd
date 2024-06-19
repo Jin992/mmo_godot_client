@@ -4,8 +4,7 @@ const HOST: String = "127.0.0.1"
 const PORT: int = 3333
 const RECONNECT_TIMEOUT: float = 3.0
 
-const mmoProto = preload("res://proto/serverRequest.gd")
-const ServerResponse = preload("res://proto/serverResponse.gd")
+const mmoProto = preload("res://proto/game_service.gd")
 const TcpSocket = preload("res://mmo/net/tcp_socket.gd")
 
 var _socket = TcpSocket.new()
@@ -25,8 +24,9 @@ func socket_connect() -> void:
 	_socket.connect_to_host(HOST, PORT)
 	
 	
-func send(req: mmoProto.ServerRequest) -> void:
+func send(req: mmoProto.GameServiceMessage) -> void:
 	var packed_bytes: PackedByteArray = req.to_bytes()
+	print(packed_bytes)
 	#print("Send size: ", packed_bytes.size())
 	_socket.send(packed_bytes)
 
